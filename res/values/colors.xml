@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+        <!-- 基本颜色 -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#ff888888</color>
+    <color name="black">#313131</color>
+    <color name="bgray">#6a6a6a</color>
+    <color name="green">#2A4302</color>
+    <color name="red">#ffff0000</color>
+    <color name="blue">#0000FF</color>
+    <color name="transparent">#00000000</color>
+    
+    
+     <color name="green_style">#22ad38</color>
+    <color name="black_text">#2c2c2c</color>
+    <color name="white_text">#FFFFFF</color>
+    <color name="white_background">#F8F8F8</color>
+    <color name="gray_hint">#dddddd</color>
+    <color name="gray_border">#dbdbdb</color>
+    <color name="gray_text">#7e7e83</color>
+    <color name="blue_text">#10a6f0</color>
+    <color name="red_text">#f2000a</color>
+
+    <color name="black_36">#363535</color>
+    <color name="gray_ee">#eeeeee</color>
+    <color name="red_ff">#ff0000</color>
+    
+</resources>
