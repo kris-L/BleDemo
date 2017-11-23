@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    >
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="30dip"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/et_id"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:hint="十六进制主机id"
+            android:textColor="#fff"
+            android:padding="8dp"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/buttonborder"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/confirm"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll"
+        android:layout_marginLeft="20dip"
+        android:text="例如：0123456789abcdef"
+        android:textColor="#fff"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/scan_dev_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/buttonborder"
+        android:text="@string/scan_device"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <ListView
+        android:id="@+id/lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/scan_dev_btn"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip" >
+    </ListView>
+
+</RelativeLayout>

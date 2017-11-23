@@ -7,5 +7,18 @@
 
     <string name="tradition_bt_str">传统蓝牙</string>
     <string name="ble_bt_str">BLE蓝牙</string>
+    <string name="confirm">确认</string>
+    <string name="scan_device">扫描设备</string>
+    <string name="wipe_cache">清空缓存</string>
+    <string name="notify">接收消息</string>
+    <string name="disnotify">暂停接收</string>
+    <string name="timingStr">定时发送</string>
+    <string name="password_prompt">请输入密码</string>
+    
+    <string name="service_company">约租车公司：</string>
+	<string name="car_infos">车辆信息：</string>
+	<string name="driver_infos">司机信息：</string>
+	
+	<string name="send_str">发送</string>
     
 </resources>

@@ -1,6 +1,7 @@
 package com.xw.bluetooth;
 
 import com.bluetooth.Ble;
+import com.xw.ble.BleActivity;
 import com.xw.bledemo.R;
 
 import android.app.Activity;
@@ -44,7 +45,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 			
 		case R.id.ble_bt_btn:
-			Intent intent1 = new Intent(this, BluetoothActivity.class);
+			Intent intent1 = new Intent(this, BleActivity.class);
 			startActivity(intent1);
 			break;
 		

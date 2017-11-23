@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/com/xw/ble/CommunicationInstruction.java=UTF-8
+encoding//src/com/xw/ble/RecvDataListener.java=UTF-8
+encoding//src/com/xw/ble/instruct/BtInstructionInfo.java=UTF-8
+encoding//src/com/xw/ble/instruct/BtInstructionType.java=UTF-8
+encoding//src/com/xw/ble/instruct/TerminalSerial.java=UTF-8
+encoding//src/com/xw/ble/utils/BtSendCommandUtils.java=UTF-8
 encoding/<project>=UTF-8

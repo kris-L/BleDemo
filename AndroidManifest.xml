@@ -39,7 +39,16 @@
          <activity 
             android:name="com.xw.bluetooth.ChatActivity"
             />
-        
+         
+         <activity 
+            android:name="com.xw.ble.BleActivity"
+            />    
+            
+         <activity 
+            android:name="com.xw.ble.BluetoothTest"
+            /> 
+         
+         
         
     </application>
 
