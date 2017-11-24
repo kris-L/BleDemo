@@ -39,7 +39,7 @@ import android.widget.Toast;
 public class BleActivity extends Activity implements OnClickListener {
 	private final static String TAG = BleActivity.class.getSimpleName();
 	// 扫描蓝牙按钮
-	private Button scan_btn, btn_sure;
+	private Button scan_btn, btn_sure,service_btn;
 	// 蓝牙适配器
 	BluetoothAdapter mBluetoothAdapter;
 	// 蓝牙信号强度
@@ -82,6 +82,7 @@ public class BleActivity extends Activity implements OnClickListener {
 		if (BTWorkService.workThread != null) {
 			stopBleService();
 		}
+		stopBleService();
 	}
 
 	@Override
@@ -213,7 +214,9 @@ public class BleActivity extends Activity implements OnClickListener {
 	 */
 	private void initWidgets() {
 		scan_btn = (Button) this.findViewById(R.id.scan_dev_btn);
+		service_btn = (Button) findViewById(R.id.service_btn);
 		scan_btn.setOnClickListener(this);
+		service_btn.setOnClickListener(this);
 		lv = (ListView) this.findViewById(R.id.lv);
 		mHandler = new Handler();
 		et_id = (EditText) findViewById(R.id.et_id);
@@ -274,16 +277,24 @@ public class BleActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-
-		if (scan_flag) {
-			mleDeviceListAdapter = new LeDeviceListAdapter();
-			lv.setAdapter(mleDeviceListAdapter);
-			scanLeDevice(true);
-		} else {
-
-			scanLeDevice(false);
-			scan_btn.setText("扫描设备");
-		}
+        switch(v.getId()){
+        case R.id.scan_dev_btn:
+        	if (scan_flag) {
+    			mleDeviceListAdapter = new LeDeviceListAdapter();
+    			lv.setAdapter(mleDeviceListAdapter);
+    			scanLeDevice(true);
+    		} else {
+    			scanLeDevice(false);
+    			scan_btn.setText("扫描设备");
+    		}
+        	break;
+        	
+        case R.id.service_btn:
+			Intent intent = new Intent(this,BleServiceActivity.class);
+		    startActivity(intent);
+        	break;
+        }
+		
 	}
 
 	/**

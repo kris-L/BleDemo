@@ -196,11 +196,6 @@ public class BluetoothTest extends Activity implements OnClickListener {
 		mDeviceAddress = b.getString(EXTRAS_DEVICE_ADDRESS);
 		mRssi = b.getString(EXTRAS_DEVICE_RSSI);
 
-		// if(!file.exists()) {
-		// boolean dd = file.mkdir();
-		// Log.d("hyw","dd:"+dd);
-		// }
-		// textFile = new File(fileName+txt);
 		/* 启动蓝牙service */
 		startBleService();
 
@@ -209,14 +204,13 @@ public class BluetoothTest extends Activity implements OnClickListener {
 		tv_device_name.setText(mDeviceName);
 		tv_device_address.setText(mDeviceAddress);
 
-		File file = new File(fileName);
-		if (!file.exists()) {
-			boolean dd = file.mkdir();
-			Log.d("hyw1", "boolean:" + dd);
-		}
-		textFile = new File(fileName + txt);
+//		File file = new File(fileName);
+//		if (!file.exists()) {
+//			boolean dd = file.mkdir();
+//			Log.d("hyw1", "boolean:" + dd);
+//		}
+//		textFile = new File(fileName + txt);
 
-		writeFile("test data");
 	}
 
 	// 初始化动作
@@ -426,11 +420,19 @@ public class BluetoothTest extends Activity implements OnClickListener {
 				// 更新连接状态
 				connect_state.setText(status);
 				passwordNum = 3;
+				
 				if (isPair) {
 
 				} else {
-					ll_register.setVisibility(View.VISIBLE);
-					ll_register.startAnimation(anim_in_down);
+					isPair = true;
+					ll_register.setVisibility(View.GONE);
+					ll_register.startAnimation(anim_out_down);
+					ll_bottom.startAnimation(anim_in_down);
+					ll_bottom.setVisibility(View.VISIBLE);
+					
+					//密码验证逻辑，测试省去
+//					ll_register.setVisibility(View.VISIBLE);
+//					ll_register.startAnimation(anim_in_down);
 				}
 			} else if (BTWorkThread.ACTION_GATT_DISCONNECTED// Gatt连接失败
 					.equals(action)) {
@@ -499,7 +501,6 @@ public class BluetoothTest extends Activity implements OnClickListener {
 	 */
 	private void displayData(final String rev_string) {
 		rev_str += rev_string;
-		writeFile(rev_string);
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -588,11 +589,8 @@ public class BluetoothTest extends Activity implements OnClickListener {
 
 												@Override
 												public void run() {
-													
-													ll_bottom
-															.startAnimation(anim_in_down);
-													ll_bottom
-															.setVisibility(View.VISIBLE);
+													ll_bottom.startAnimation(anim_in_down);
+													ll_bottom.setVisibility(View.VISIBLE);
 												}
 											}, 1000);
 										} else {
@@ -609,10 +607,6 @@ public class BluetoothTest extends Activity implements OnClickListener {
 											}
 										}
 									}
-//									Message msg = new Message();
-//									msg.what = BT_PAIR_RESULT;
-//									msg.obj = Output;
-//									handler.sendMessage(msg);
 								}
 							});
 						}
@@ -671,7 +665,13 @@ public class BluetoothTest extends Activity implements OnClickListener {
 		Log.e(TAG, "startBleService");
 		gattServiceIntent = new Intent(this, BTWorkService.class);
 		startService(gattServiceIntent);
-		// bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+	}
+	
+	
+	private void stopBleService() {
+		Log.e(TAG, "stopBleService");
+		Intent intent = new Intent(this, BTWorkService.class);
+		stopService(intent);
 	}
 
 	@Override
@@ -685,51 +685,7 @@ public class BluetoothTest extends Activity implements OnClickListener {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void writeFile(String msg) {
-		if (!textFile.exists()) {
-			txt = File.separator + df1.format(new Date()) + ".txt";
-			textFile = new File(fileName + txt);
-		}
-		try {
-			if (getFileSize(textFile) > 10 * 1000 * 1000) {
-				txt = File.separator + df1.format(new Date()) + ".txt";
-				textFile = new File(fileName + txt);
-			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
-		String changeLine = "\r\n";
-		String time = df.format(new Date());
-
-		OutputStream out = null;
-		byte[] b = (time + " : " + msg + changeLine).getBytes();
-		try {
-			// out = new FileOutputStream(file);
-			out = new FileOutputStream(textFile, true); // 实现内容的追加
-			out.write(b);
-			out.close();
-			System.out.println("write success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("write fail");
-		}
-	}
-
-	private static long getFileSize(File file) throws Exception {
-		long size = 0;
-		if (file.exists()) {
-			FileInputStream fis = null;
-			fis = new FileInputStream(file);
-			size = fis.available();
-			Log.e("hywSize", "获取文件大小:" + size);
-		} else {
-			file.createNewFile();
-			Log.e("获取文件大小", "文件不存在!");
-		}
-		return size;
-	}
 
 
 

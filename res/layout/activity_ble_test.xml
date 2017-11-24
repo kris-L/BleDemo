@@ -442,7 +442,7 @@
             
             />
         
-        <com.xw.bluetooth.views.InstructInputView
+        <com.xw.ble.InstructInputView
             android:id="@+id/send_instruct_iiv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

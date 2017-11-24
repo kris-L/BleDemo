@@ -161,7 +161,6 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 				mListView.setSelection(mDatas.size() - 1);
 			}
 		}
-
 	};
 
 	@Override

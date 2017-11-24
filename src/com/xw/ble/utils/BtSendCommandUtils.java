@@ -8,7 +8,7 @@
  */
 package com.xw.ble.utils;
 
-import java.text.SimpleDateFormat;  
+import java.text.SimpleDateFormat;   
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import com.xw.ble.CommunicationInstruction;
 import com.xw.ble.MsgTotal_match;
+import com.xw.ble.instruct.TerminalSerial;
 import com.xw.ble.service.BTWorkService;
 
 import android.bluetooth.BluetoothGattService;
@@ -151,7 +152,10 @@ public class BtSendCommandUtils {
 		MsgTotal_match msgTotal = new MsgTotal_match((byte) 0x01, (byte) 0x02,
 				(byte) 0x01, Hex2ByteUtil.hexStringToBytes(pas));
 		byte[] data = msgTotal.getMsgBytes();
-	
+		
+		if (TerminalSerial.mSendPasswordListener != null) {
+			TerminalSerial.mSendPasswordListener.getInstructionInput(pas);
+		}
 		if (BTWorkService.workThread != null) {
 			BTWorkService.workThread.writeData(data);
 		}
@@ -203,8 +207,6 @@ public class BtSendCommandUtils {
 		if (BTWorkService.workThread != null) {
 			BTWorkService.workThread.writeData(data);
 		}
-		// String dataStr=Hex2ByteUtil.bytesToHexString(data);
-		// Log.e(TAG,"sendInputInstruct:"+ dataStr);
 		return true;
 	}
 

@@ -60,6 +60,8 @@ import android.widget.Toast;
 	public final static String UUID_SERVICE_MAIN = "0003cdd0-0000-1000-8000-00805f9b0131";
 	public final static String UUID_DATA_READ = "0003cdd1-0000-1000-8000-00805f9b0131";
 	public final static String UUID_DATA_WRITE = "0003cdd2-0000-1000-8000-00805f9b0131";
+	public final static String UUID_CONF = "00002902-0000-1000-8000-00805f9b34fb";
+	
 	private static BluetoothGattCharacteristic character_read = null;
 	private static BluetoothGattCharacteristic character_write = null;
 	private static BluetoothGattCharacteristic character_notify = null;
@@ -240,7 +242,12 @@ import android.widget.Toast;
 				"write data:"
 						+ Hex2ByteUtil.bytesToHexString(characteristic
 								.getValue()));
-		mBluetoothGatt.writeCharacteristic(characteristic);
+		boolean result = mBluetoothGatt.writeCharacteristic(characteristic);
+		if(result){
+			Log.e(TAG, "写入特征值成功");
+		}else{
+			Log.e(TAG, "写入特征值失败");
+		}
 	}
 
 	/**
@@ -261,8 +268,12 @@ import android.widget.Toast;
 
 		BluetoothGattDescriptor clientConfig = characteristic
 				.getDescriptor(UUID
-						.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+						.fromString(UUID_CONF));
 
+		for (BluetoothGattDescriptor descriptor:characteristic.getDescriptors()){
+            Log.e(TAG, "BluetoothGattDescriptor: "+descriptor.getUuid().toString());
+        }
+		
 		if (enabled) {
 			clientConfig
 					.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
@@ -365,7 +376,7 @@ import android.widget.Toast;
 				BluetoothGattCharacteristic characteristic, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				// 将数据通过广播到Ble_Activity
-				broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+				broadcastUpdateData(ACTION_DATA_AVAILABLE, characteristic);
 				Log.e(TAG, "onCharacteristicRead:  ,status:" + status);
 			}
 		}
@@ -377,7 +388,7 @@ import android.widget.Toast;
 		public void onCharacteristicChanged(BluetoothGatt gatt,
 				BluetoothGattCharacteristic characteristic) {
 			Log.e("hyw", "onCharacteristicChanged:");
-			broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+			broadcastUpdateData(ACTION_DATA_AVAILABLE, characteristic);
 		}
 	};
 
@@ -388,7 +399,7 @@ import android.widget.Toast;
 	}
 
 	/* 广播远程发送过来的数据 */
-	public void broadcastUpdate(final String action,
+	public void broadcastUpdateData(final String action,
 			final BluetoothGattCharacteristic characteristic) {
 		// 从特征值获取数据
 		final byte[] sourceData = characteristic.getValue();
@@ -464,19 +475,25 @@ import android.widget.Toast;
 	}
 
 	public void writeData(byte[] data) {
+		
 		if (character_write == null) {
 			Toast.makeText(mContext, "无相应服务，不能进行写操作", Toast.LENGTH_SHORT)
 					.show();
 			if (mBluetoothGatt != null) {
 				BluetoothGattService service = mBluetoothGatt
 						.getService(UUID.fromString(UUID_SERVICE_MAIN));
+				if(service == null){
+					 Log.e(TAG,"service="+service);
+					 return;
+				}
 				character_read = service.getCharacteristic(UUID
 						.fromString(UUID_DATA_READ));
 				character_notify = service.getCharacteristic(UUID
 						.fromString(UUID_DATA_READ));
+	
 				readCharacteristic(character_read);
 				setCharacteristicNotification(character_notify, true);
-				Log.e("hyw", "再次初始化相关服务");
+				Log.e(TAG, "再次初始化相关服务");
 				Toast.makeText(mContext, "服务已重新打开，请重试", Toast.LENGTH_SHORT)
 						.show();
 			} else {
