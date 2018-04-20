@@ -11,6 +11,9 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +21,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,7 +45,8 @@ public class BleActivity extends Activity implements OnClickListener {
 	// 扫描蓝牙按钮
 	private Button scan_btn, btn_sure,service_btn;
 	// 蓝牙适配器
-	BluetoothAdapter mBluetoothAdapter;
+	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothLeScanner scanner;
 	// 蓝牙信号强度
 	private ArrayList<Integer> rssis;
 	// 自定义Adapter
@@ -72,6 +77,8 @@ public class BleActivity extends Activity implements OnClickListener {
 	 * 
 	 * **/
 	private BluetoothAdapter.LeScanCallback mLeScanCallback;
+
+	
 	private EditText et_id;
 
 	@Override
@@ -130,6 +137,8 @@ public class BleActivity extends Activity implements OnClickListener {
 
 			}
 		};
+		
+		
 		// 自定义适配器
 		mleDeviceListAdapter = new LeDeviceListAdapter();
 		// 为listview指定适配器
@@ -262,6 +271,8 @@ public class BleActivity extends Activity implements OnClickListener {
 		// 获取手机本地的蓝牙适配器
 		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		mBluetoothAdapter = bluetoothManager.getAdapter();
+		scanner = mBluetoothAdapter.getBluetoothLeScanner();
+		
 		// 打开蓝牙权限
 		if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(
@@ -323,6 +334,11 @@ public class BleActivity extends Activity implements OnClickListener {
 			mScanning = true;
 			scan_flag = false;
 			scan_btn.setText("停止扫描");
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//				scanner.startScan(mScanCallback);
+//		    } else {
+////		    	mBluetoothAdapter.startLeScan(mLeScanCallback);
+//		    }
 			mBluetoothAdapter.startLeScan(mLeScanCallback);
 		} else {
 			Log.e("hyw", "stoping... scan.............");
@@ -332,6 +348,30 @@ public class BleActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	
+	/**
+	 * 5.0后的ble搜索回调
+	 */
+	private ScanCallback mScanCallback = new ScanCallback(){
+		@Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                BluetoothDevice device = result.getDevice();
+                /* 讲扫描到设备的信息输出到listview的适配器 */
+				mleDeviceListAdapter.addDevice(device, result.getRssi());
+				mleDeviceListAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            Log.e(TAG,"搜索失败");
+        }
+	};
+	
+	
 	/**
 	 * 
 	 * @ClassName LeDeviceListAdapter

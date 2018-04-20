@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />  
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />  
+	
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -37,7 +38,7 @@
         <activity android:name="com.xw.ble.BleActivity" />
         <activity android:name="com.xw.ble.BluetoothTest" />
         <activity android:name="com.xw.ble.BleServiceActivity" />
-        
+        <activity android:name="com.xw.bluetooth.AndroidTest" />
         
         <service
             android:name="com.xw.ble.service.BTWorkService"

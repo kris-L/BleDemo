@@ -3,6 +3,8 @@ package com.xw.bluetooth;
 import java.io.IOException; 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -173,6 +175,7 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 		if (BluetoothActivity.mType == Type.CILENT) {
 			String address = BluetoothActivity.BlueToothAddress;
 			if (!"".equals(address)) {
+				mBluetoothAdapter.cancelDiscovery();
 				mDevice = mBluetoothAdapter.getRemoteDevice(address);
 				mClientThread = new ClientThread();
 				mClientThread.start();
@@ -192,13 +195,17 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 		public void run() {
 			try {
 				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-//				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FF"));
+//				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00000003-0000-1000-8000-00805F9B34FB"));
+	
+//				mSocket =(BluetoothSocket) mDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(mDevice,1);
+//				mSocket.connect();
+	
 				Message msg = new Message();
 				msg.obj = "请稍候，正在连接服务器:" + BluetoothActivity.BlueToothAddress;
 				msg.what = STATUS_CONNECT;
 				mHandler.sendMessage(msg);
 
-				mSocket.connect();
+//				mSocket.connect();
 
 				msg = new Message();
 				msg.obj = "已经连接上服务端！可以发送信息。";

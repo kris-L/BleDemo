@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.xw.ble.utils.Hex2ByteUtil;
 import com.xw.ble.utils.MyQueue;
+import com.xw.ble.utils.OutputStringUtil;
 import com.xw.bledemo.R;
 import com.xw.bluetooth.ChatActivity;
 import com.xw.bluetooth.DeviceBean;
@@ -34,13 +35,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class BleServiceActivity extends Activity {
+public class BleServiceActivity extends Activity implements OnClickListener {
 
 	private final static String TAG = "BleServiceActivity";
 	private static final int STATUS_CONNECT = 0x11;
@@ -65,7 +68,9 @@ public class BleServiceActivity extends Activity {
 	// --线程类-----------------
 	private ServerThread mServerThread;
 	public MyQueue myQueue;
-	
+    private BluetoothGattCharacteristic characteristicRead;
+    private BluetoothGattCharacteristic characteristicWrite;
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,6 +134,7 @@ public class BleServiceActivity extends Activity {
 		mEtMsg.clearFocus();
 
 		mBtnSend = (Button) findViewById(R.id.btn_msg_send);
+		mBtnSend.setOnClickListener(this);
 		mBtnDisconn = (Button) findViewById(R.id.btn_disconnect);
 	}
 
@@ -223,7 +229,7 @@ public class BleServiceActivity extends Activity {
 				if(device != null){
 					Message msg = new Message();
 					msg = new Message();
-					msg.obj = "蓝牙:"+device.getAddress()+"已连接";
+					msg.obj = "蓝牙:"+device.getAddress()+"连接失败";
 					msg.what = STATUS_CONNECT;
 					mHandler.sendMessage(msg);
 				}
@@ -259,10 +265,26 @@ public class BleServiceActivity extends Activity {
 				byte[] value) {
 			Log.e(TAG,
 					"We have received a write request for one of our hosted characteristics");
-			Log.e(TAG, "data = " + value.toString());
+//			Log.e(TAG, "data = " + value.toString());
 			super.onCharacteristicWriteRequest(device, requestId,
 					characteristic, preparedWrite, responseNeeded, offset,
 					value);
+			
+			//发送响应，不然会阻塞
+			mGattServer.sendResponse(device, requestId,
+					BluetoothGatt.GATT_SUCCESS, offset,
+					characteristic.getValue());
+			
+	        String data = Hex2ByteUtil.bytesToHexString(value);
+	        Log.e(TAG, "收到："+data);
+	    
+//	        characteristicRead.setValue(value);
+//	        mGattServer.notifyCharacteristicChanged(device, characteristicRead, false);
+			
+	        characteristicWrite.setValue(value);
+	        mGattServer.notifyCharacteristicChanged(device, characteristicWrite, false);
+			//4.处理响应内容
+//            onResponseToClient(value, device, requestId, characteristic);
 		}
 
 		@Override
@@ -277,7 +299,7 @@ public class BleServiceActivity extends Activity {
 			Log.e(TAG, "Our gatt server descriptor was read.");
 			super.onDescriptorReadRequest(device, requestId, offset, descriptor);
 
-		}
+		} 
 
 		@Override
 		public void onDescriptorWriteRequest(BluetoothDevice device,
@@ -310,7 +332,8 @@ public class BleServiceActivity extends Activity {
 		
 		Log.e(TAG, "接收数据data="+data);
 	}
-	
+
+
 	
 
 	@SuppressLint("NewApi")
@@ -343,37 +366,38 @@ public class BleServiceActivity extends Activity {
 		mGattServer = mManager.openGattServer(this, mGattServerCallback);
 
 		// addDeviceInfoService(mGattServer);
-
-		BluetoothGattCharacteristic read2Characteristic = new BluetoothGattCharacteristic(
+		
+		characteristicRead = new BluetoothGattCharacteristic(
 				UUID.fromString(UUID_READ),
-				BluetoothGattCharacteristic.PROPERTY_READ,
+				BluetoothGattCharacteristic.PROPERTY_READ|BluetoothGattCharacteristic.PROPERTY_NOTIFY,
 				BluetoothGattCharacteristic.PERMISSION_READ);
 
-		BluetoothGattCharacteristic writeCharacteristic = new BluetoothGattCharacteristic(
+		characteristicWrite = new BluetoothGattCharacteristic(
 				UUID.fromString(UUID_WRITE),
-				BluetoothGattCharacteristic.PROPERTY_WRITE,
+				BluetoothGattCharacteristic.PROPERTY_WRITE|BluetoothGattCharacteristic.PROPERTY_NOTIFY,
 				BluetoothGattCharacteristic.PERMISSION_WRITE);
 	
 		BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(
 				UUID.fromString(UUID_CONFIG),
 				BluetoothGattCharacteristic.PROPERTY_NOTIFY);
-		read2Characteristic.addDescriptor(descriptor);
-		
+		characteristicRead.addDescriptor(descriptor);
 
 		BluetoothGattService AService = new BluetoothGattService(
 				UUID.fromString(UUID_DATA_SERVICE),
 				BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
 		
-		AService.addCharacteristic(read2Characteristic);
-		AService.addCharacteristic(writeCharacteristic);
-		
+		AService.addCharacteristic(characteristicRead);
+		AService.addCharacteristic(characteristicWrite);
+		if(AService == null){
+			Log.e(TAG, "AService==null");
+		}
 		// Add notify characteristic here !!!
 		mGattServer.addService(AService);
 
 		mLeAdvertiser.startAdvertising(settingBuilder.build(),
 				advBuilder.build(), mAdvCallback);
-		
+
 	}
 
 	@SuppressLint("NewApi")
@@ -382,6 +406,19 @@ public class BleServiceActivity extends Activity {
 			mLeAdvertiser.stopAdvertising(mAdvCallback);
 
 		mLeAdvertiser = null;
+	}
+
+
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId()){
+		case R.id.btn_msg_send:
+			
+			
+			break;
+		}
 	}
 
 }

@@ -16,6 +16,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	
 	private Button tradition_bt_btn;
 	private Button ble_bt_btn;
+	private Button android_test_btn;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,10 +29,11 @@ public class MainActivity extends Activity implements OnClickListener{
 	private void initView(){
 		tradition_bt_btn = (Button) findViewById(R.id.tradition_bt_btn);
 		ble_bt_btn = (Button) findViewById(R.id.ble_bt_btn);
-		
+		android_test_btn = (Button) findViewById(R.id.android_test_btn);
 		
 		tradition_bt_btn.setOnClickListener(this);
 		ble_bt_btn.setOnClickListener(this);
+		android_test_btn.setOnClickListener(this);
 	}
 
 	@Override
@@ -48,7 +50,11 @@ public class MainActivity extends Activity implements OnClickListener{
 			Intent intent1 = new Intent(this, BleActivity.class);
 			startActivity(intent1);
 			break;
-		
+			
+		case R.id.android_test_btn:
+			Intent intent2 = new Intent(this, AndroidTest.class);
+			startActivity(intent2);
+			break;
 		}
 	}
 	

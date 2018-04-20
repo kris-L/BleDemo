@@ -157,7 +157,7 @@ public class DeviceActivity extends Activity {
 				
 				/* 开始搜索 */
 				mBtAdapter.startDiscovery();
-				mBtnSearch.setText("ֹͣ停止搜索");
+				mBtnSearch.setText("停止搜索");
 			}
 		}
 	};
@@ -218,7 +218,7 @@ public class DeviceActivity extends Activity {
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
 				setProgressBarIndeterminateVisibility(false);
 				if (mListView.getCount() == 0) {
-					mDatas.add(new DeviceBean("û没有发现蓝牙设备", false));
+					mDatas.add(new DeviceBean("没有发现蓝牙设备", false));
 					mAdapter.notifyDataSetChanged();
 					mListView.setSelection(mDatas.size() - 1);
 				}

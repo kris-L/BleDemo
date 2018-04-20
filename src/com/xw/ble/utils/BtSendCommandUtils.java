@@ -1,12 +1,4 @@
-/**   
- * @Title SendCommandUtils.java 
- * @Package com.businfovision.util 
- * @Description  
- * @author 陈志刚
- * @date 2014-7-31 下午6:04:31 
- * @version V1.0   
- */
-package com.xw.ble.utils;
+package com.xw.ble.utils; 
 
 import java.text.SimpleDateFormat;   
 import java.util.ArrayList;
