@@ -8,6 +8,7 @@ import com.xw.bledemo.R;
 import com.xw.bluetooth.ChatListAdapter;
 import com.xw.bluetooth.BluetoothActivity.Type;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -18,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * @Date 2017年11月22日
  */
 public class DeviceActivity extends Activity {
+	private final String TAG = "lsz";
 	private ListView mListView;
 	//数据
 	private ArrayList<DeviceBean> mDatas;
@@ -83,12 +86,21 @@ public class DeviceActivity extends Activity {
 	/**
 	 * 列出所有的蓝牙设备
 	 */
+	@SuppressLint("NewApi") 
 	private void init() {
-		Log.i("tag", "mBtAdapter=="+ mBtAdapter);
+		Log.i(TAG, "mBtAdapter=="+ mBtAdapter);
 		//根据适配器得到所有的已配对设备信息
 		Set<BluetoothDevice> deviceSet = mBtAdapter.getBondedDevices();
 		if (deviceSet.size() > 0) {
 			for (BluetoothDevice device : deviceSet) {
+				Log.e(TAG,device.getName() +","+device.getUuids().toString());
+				ParcelUuid[] testLlist = device.getUuids();
+				if(testLlist != null){
+					for(int i=0;i<testLlist.length;i++){
+						Log.e(TAG,"uui="+testLlist[i].getUuid());
+					}
+				}
+				
 				mDatas.add(new DeviceBean(device.getName() + "\n" + device.getAddress(), true));
 				mAdapter.notifyDataSetChanged();
 				mListView.setSelection(mDatas.size() - 1);

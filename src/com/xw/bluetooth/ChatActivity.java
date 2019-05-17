@@ -15,6 +15,7 @@ import com.xw.bluetooth.BluetoothActivity.Type;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -195,7 +196,8 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 		public void run() {
 			try {
 				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-//				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00000003-0000-1000-8000-00805F9B34FB"));
+//				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001124-0000-1000-8000-00805F9B34FB"));
+//				mSocket = mDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001200-0000-1000-8000-00805f9b34fb"));
 	
 //				mSocket =(BluetoothSocket) mDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(mDevice,1);
 //				mSocket.connect();
@@ -205,7 +207,7 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 				msg.what = STATUS_CONNECT;
 				mHandler.sendMessage(msg);
 
-//				mSocket.connect();
+				mSocket.connect();
 
 				msg = new Message();
 				msg.obj = "已经连接上服务端！可以发送信息。";
@@ -215,6 +217,12 @@ public class ChatActivity extends Activity implements OnItemClickListener, OnCli
 				mReadThread = new ReadThread();
 				mReadThread.start();
 			} catch (IOException e) {
+				try {
+					mSocket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				Log.e("lsz", "error="+e);
 				Message msg = new Message();
 				msg.obj = "连接服务端异常！断开连接重新试一试。";
